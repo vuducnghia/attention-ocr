@@ -30,7 +30,7 @@ def loss_function(y_true, y_pred):
     loss = tf.keras.losses.categorical_crossentropy(y_true, y_pred)
     loss = loss * mask
 
-    return tf.reduce_sum(loss)
+    return tf.reduce_mean(loss)
 
 
 model = Model(decode_units=decode_units, vocab_size=46, training=True)
