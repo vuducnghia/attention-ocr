@@ -2,10 +2,15 @@ from tensorflow.keras import Sequential
 from tensorflow.keras.layers import Input, Dense, GRU
 from tensorflow.keras.models import Model
 import tensorflow as tf
-import numpy as np
-import cv2
+from tensorflow.compat.v1 import ConfigProto
+from tensorflow.compat.v1 import InteractiveSession
 
-InceptionResNetV2 = tf.keras.applications.InceptionResNetV2(weights='imagenet', include_top=False)
+config = ConfigProto()
+config.gpu_options.allow_growth = True
+session = InteractiveSession(config=config)
+
+InceptionResNetV2 = tf.keras.applications.InceptionResNetV2(weights='imagenet', include_top=False,
+                                                            input_tensor=Input(shape=(299, 299, 3)))
 # InceptionResNetV2.summary()
 base_model = Model(inputs=InceptionResNetV2.get_layer('input_1').input,
                    outputs=InceptionResNetV2.get_layer('mixed_6a').output)
@@ -73,7 +78,6 @@ class Model(tf.keras.Model):
         logits, hidden = self.decoder(word_one_hot, pre_hidden, features)
 
         return logits, hidden
-
 
 # m = Model()
 # # m.build(input_shape=(2, 299, 299, 3))
