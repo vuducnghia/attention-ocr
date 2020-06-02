@@ -33,7 +33,8 @@ def loss_function(y_true, y_pred):
     return tf.reduce_mean(loss)
 
 
-model = Model(decode_units=decode_units, vocab_size=46, training=True)
+model = Model(decode_units=decode_units, vocab_size=46, image_height=image_height, image_width=image_width,
+              finetune=False)
 
 
 @tf.function

@@ -10,7 +10,7 @@ class ImageUtil:
 
     def load(self, filename):
         image = cv2.imread(filename)
-        image = cv2.resize(image, (self._image_height, self._image_width))
+        image = cv2.resize(image, (self._image_width, self._image_height))
         image = preprocess_input(image).astype(np.float32)
         return image
 

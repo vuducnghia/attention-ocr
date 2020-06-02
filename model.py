@@ -1,6 +1,4 @@
-from tensorflow.keras import Sequential
 from tensorflow.keras.layers import Input, Dense, GRU
-from tensorflow.keras.models import Model
 import tensorflow as tf
 from tensorflow.compat.v1 import ConfigProto
 from tensorflow.compat.v1 import InteractiveSession
@@ -8,13 +6,6 @@ from tensorflow.compat.v1 import InteractiveSession
 config = ConfigProto()
 config.gpu_options.allow_growth = True
 session = InteractiveSession(config=config)
-
-InceptionResNetV2 = tf.keras.applications.InceptionResNetV2(weights='imagenet', include_top=False,
-                                                            input_tensor=Input(shape=(299, 299, 3)))
-# InceptionResNetV2.summary()
-base_model = Model(inputs=InceptionResNetV2.get_layer('input_1').input,
-                   outputs=InceptionResNetV2.get_layer('mixed_6a').output)
-base_model.summary()  # output (bs, 17, 17, 1088)
 
 
 class Attention(tf.keras.layers.Layer):
@@ -67,24 +58,26 @@ class Decoder(tf.keras.layers.Layer):
 
 
 class Model(tf.keras.Model):
-    def __init__(self, decode_units=256, vocab_size=46, training=True):
+    def __init__(self, decode_units=256, vocab_size=46, image_height=299, image_width=299, finetune=False):
         super().__init__()
-        self.training = training
+        InceptionResNetV2 = tf.keras.applications.InceptionResNetV2(weights='imagenet', include_top=False,
+                                                                    input_tensor=Input(shape=(image_height, image_width, 3)))
+        # InceptionResNetV2.summary()
+        self.base_model = tf.keras.models.Model(inputs=InceptionResNetV2.get_layer('input_1').input,
+                                outputs=InceptionResNetV2.get_layer('mixed_6a').output)
+        self.base_model.summary()  # output (bs, 17, 17, 1088)
+
+        if finetune:
+            self.base_model.trainable = False
+        else:
+            self.base_model.trainable = True
 
         self.decoder = Decoder(decode_units, vocab_size)
 
     def call(self, word_one_hot, pre_hidden, images):
-        features = base_model(images)
+        features = self.base_model(images)
         logits, hidden = self.decoder(word_one_hot, pre_hidden, features)
 
         return logits, hidden
 
-# m = Model()
-# # m.build(input_shape=(2, 299, 299, 3))
-# # m.summary()
-# img = cv2.imread('1.jpg')
-# img = cv2.resize(img, (299, 299))
-#
-# img = np.asarray([img, img])
-# print(img.shape)
-# m(tf.ones((2, 10)), tf.ones((2, 256)), img)
+# m = Model(image_height=80, image_width=480)
