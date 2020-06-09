@@ -1,4 +1,5 @@
 import numpy as np
+from config import *
 
 
 class Vocabulary:
@@ -6,7 +7,7 @@ class Vocabulary:
     start = '<START>'  # start of sentence
     eos = '<END>'  # end of sentence
 
-    def __init__(self, letters=" QWERTYUIOPASDFGHJKLZXCVBNM'-:1234567890+()", max_txt_length=30):
+    def __init__(self):
         self.vocabulary = ['<PAD>', '<START>', '<END>'] + list(letters)
         self.max_txt_length = max_txt_length
         self.vocab_size = len(self.vocabulary)
@@ -33,7 +34,10 @@ class Vocabulary:
 
         return text
 
+    def label_to_text(self):
+        pass
+
 # v = Vocabulary()
 # print(v.vocabulary)
 # a = v.one_hot_encode('NGHIA')
-# print(a[0])
+# print(v.one_hot_decode(a))

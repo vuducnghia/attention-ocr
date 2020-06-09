@@ -1,0 +1,10 @@
+EPOCHS = 2
+BATCH_SIZE = 2
+LEARNING_RATE = 0.001
+embedding_dim = 256
+vocab_size = 43 + 3
+max_txt_length = 27 + 3
+decode_units = 256
+image_height = 80
+image_width = 320
+letters = " QWERTYUIOPASDFGHJKLZXCVBNM'-:1234567890+()"

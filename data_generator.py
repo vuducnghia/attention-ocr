@@ -3,21 +3,20 @@ from vocabulary import Vocabulary
 import os
 import random
 import numpy as np
-
-letters = " QWERTYUIOPASDFGHJKLZXCVBNM'-:1234567890+()"
+from config import *
 
 
 class Generator:
-    def __init__(self, folder_image, folder_label, batch_size, image_height=32, image_width=320, max_txt_length=30):
+    def __init__(self, folder_image, folder_label):
         self.folder_image = folder_image
         self.folder_label = folder_label
-        self.batch_size = batch_size
+        self.batch_size = BATCH_SIZE
         self.max_txt_length = max_txt_length
         self.examples = []
         self.cur_index = 0
         self.load_data()
         self.image_util = ImageUtil(image_height=image_height, image_width=image_width)
-        self.vocab = Vocabulary(letters, self.max_txt_length)
+        self.vocab = Vocabulary()
 
     def load_data(self):
         with open(self.folder_label, 'r') as f:
@@ -41,7 +40,7 @@ class Generator:
 
 
                 txt, img_path = self.examples[self.cur_index]
-                # print(txt, img_path)
+
                 images.append(self.image_util.load(img_path))
                 target.append(self.vocab.one_hot_encode(txt))
                 # print(self.vocab.text_to_labels(txt))
