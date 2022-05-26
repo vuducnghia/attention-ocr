@@ -1,4 +1,4 @@
-tensorflow-gpu==2.1.0
+tensorflow-gpu==2.7.2
 scikit-learn==0.22.1
 opencv-python==4.2.0.32
 editdistance
